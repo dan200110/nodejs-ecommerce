@@ -11,4 +11,4 @@ RUN npm install --production --silent
 
 COPY . .
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:dev"]

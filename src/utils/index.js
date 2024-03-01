@@ -14,6 +14,7 @@ const unGetSelectData = (select = []) => {
 }
 
 const checkEnable = (value) => {
+    console.log('Check this value is: ', value);
     return value === 'true'
 }
 

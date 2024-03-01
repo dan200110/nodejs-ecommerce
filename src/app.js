@@ -59,6 +59,7 @@ app.use(cookieParser());
 
 // init db
 if (checkEnable(configs.db.enable)) {
+    console.log('Call to connect db');
     require('./configs/config.mongose');
     const {checkOverload} = require('./helpers/check.connect');
     checkOverload();

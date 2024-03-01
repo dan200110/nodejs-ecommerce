@@ -24,7 +24,7 @@ services:
     image: mongo:latest
     restart: always
     environment:
-      - MONGO_INITDB_DATABASE=shopDEV
+      # - MONGO_INITDB_DATABASE=shopDEV
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
     command: [--auth]

@@ -1,66 +1,66 @@
-// 'use strict'
+'use strict'
 
-// const mongoose = require('mongoose');
-// const {db: {host, name, port, username, password}} = require('./config')
+const mongoose = require('mongoose');
+const {db: {host, name, port, username, password}} = require('./config')
 
-// const connectString = `mongodb://admin:admin@localhost:27017/shopDEV?authSource=admin`;
-// const {countConnect} = require('../helpers/check.connect');
-// const MAX_POLL_SIZE = 50;
-// const TIME_OUT_CONNECT = 3000;
+const connectString = `mongodb://admin3:admin3@mongodb:27017/shopDEV?authSource=admin`;
+const {countConnect} = require('../helpers/check.connect');
+const MAX_POLL_SIZE = 50;
+const TIME_OUT_CONNECT = 3000;
 
-// console.log(connectString)
-// mongoose.set('strictQuery', true);
+console.log(connectString)
+mongoose.set('strictQuery', true);
 
-// class Database {
-//     constructor() {
-//         this.connect();
-//     }
+class Database {
+    constructor() {
+        this.connect();
+    }
 
-//     // connect
-//     connect(type = 'mongodb') {
-//         if (1 === 1) {
-//             mongoose.set('debug', true);
-//             mongoose.set('debug', {color: true});
-//         }
+    // connect
+    connect(type = 'mongodb') {
+        if (1 === 1) {
+            mongoose.set('debug', true);
+            mongoose.set('debug', {color: true});
+        }
 
-//         mongoose.connect(connectString, {
-//             serverSelectionTimeoutMS: TIME_OUT_CONNECT,
-//             maxPoolSize: MAX_POLL_SIZE
-//         })
-//             .then(
-//                 _ => {
-//                     try {
-//                         countConnect();
-//                     } catch (e) {
-//                         console.log(e);
-//                     }
-//                     _ => console.log(`Connected mongodb success `);
-//                 }
-//             ).catch(
-//             err => console.log(`Error connect!`)
-//         );
+        mongoose.connect(connectString, {
+            serverSelectionTimeoutMS: TIME_OUT_CONNECT,
+            maxPoolSize: MAX_POLL_SIZE
+        })
+            .then(
+                _ => {
+                    try {
+                        countConnect();
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    _ => console.log(`Connected mongodb success `);
+                }
+            ).catch(
+            err => console.log(`Error connect!`)
+        );
 
-//         mongoose.connection.on('connected', () => {
-//             console.log('Mongodb connected to db success');
+        mongoose.connection.on('connected', () => {
+            console.log('Mongodb connected to db success');
 
-//             // insert sql ...
-//         });
-//         mongoose.connection.on('error', err => {
-//             console.error('Mongodb connected to db error' + err);
-//         });
-//         mongoose.connection.on('disconnected', () => {
-//             console.log('Mongodb disconnected to db');
-//         });
-//     }
+            // insert sql ...
+        });
+        mongoose.connection.on('error', err => {
+            console.error('Mongodb connected to db error' + err);
+        });
+        mongoose.connection.on('disconnected', () => {
+            console.log('Mongodb disconnected to db');
+        });
+    }
 
-//     static getInstance() {
-//         if (!Database.instance) {
-//             Database.instance = new Database();
-//         }
+    static getInstance() {
+        if (!Database.instance) {
+            Database.instance = new Database();
+        }
 
-//         return Database.instance;
-//     }
-// }
-// console.log('Check this file is connect to')
-// const instanceMongoDb = Database.getInstance();
-// module.exports = instanceMongoDb;
+        return Database.instance;
+    }
+}
+console.log('Check this file is connect to')
+const instanceMongoDb = Database.getInstance();
+module.exports = instanceMongoDb;

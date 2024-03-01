@@ -15,14 +15,6 @@ const server =  app.listen(PORT, () => {
     console.log(`------::----${process.env.SERVICE_NAME} start with port ${PORT}`);
 });
 
-// const mongoose = require('mongoose')
-const db = mongoose.connection;
-mongoose.set('strictQuery', true);
-mongoose.connect(`mongodb://admin:admin@localhost:27017/shopDEV`, { useNewUrlParser: true }).then(() => console.log('DB Connected!'));
-db.on('error', (err) => {
-    console.log('DB connection error:', err.message);
-})
-
 process.on('SIGINT', () => {
     server.close('Exit server express');
     // notify send (ping....)

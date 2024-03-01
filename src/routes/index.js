@@ -6,10 +6,10 @@ const router = express.Router()
 router.use('/healthcheck', require('./health'))
 
 // check apiKey
-router.use(apiKey)
+// router.use(apiKey)
 
 // check permission
-router.use(permission('0000'))
+// router.use(permission('0000'))
 
 // init routes
 router.use('/api/v1/cart', require('./cart'))
