@@ -1,4 +1,7 @@
 const {Schema, mongoose} = require("mongoose");
+//connect db
+
+
 
 const DOCUMENT_NAME = 'Shop';
 const COLLECTION_NAME = 'Shops';

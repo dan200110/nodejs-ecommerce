@@ -140,6 +140,7 @@ class AccessService {
 
     signUp = async ({name, email, password, msisdn}) => {
         // step1: check email exists?
+        console.log('Call to sign up function');
         const holderShop = await shopModel.findOne({email}).lean()
         console.log('locale:::', i18n.getLocale())
         if (holderShop) {

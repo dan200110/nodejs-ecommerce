@@ -6,34 +6,32 @@ services:
     container_name: ecommerce-service
     volumes:
       - .docker/data/app:/app/logs
-      # - ./:/app # mount từ môi trường gốc vào trong để nếu các bạn thay đổi code thì bên trong sẽ tự động cập nhật
-#    environment: # phần này ta định nghĩa ở file .env nhé
-#      - DB_HOST=${DB_HOST}
-#      - DB_NAME=${DB_NAME}
-#      - REDIS_HOST=${REDIS_HOST}
-#      - REDIS_PORT=${REDIS_PORT}
-#      - PORT=${PORT}
+      - ./:/app # mount từ môi trường gốc vào trong để nếu các bạn thay đổi code thì bên trong sẽ tự động cập nhật
+    environment: # phần này ta định nghĩa ở file .env nhé
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - PORT=${PORT}
     ports:
       - "${PORT}:${PORT}" # phần này ta định nghĩa ở file .env nhé
     restart: unless-stopped
     depends_on:
       - redis
       - mongodb
-      - rabbit
+      # - rabbit
 
   mongodb:
+    container_name: mongodb
     image: mongo:latest
-    container_name: ec-mongodb
-#    ports:
-#      - 27017:27017
+    restart: always
     environment:
-#      - MONGO_INITDB_DATABASE=test
+      - MONGO_INITDB_DATABASE=shopDEV
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
+    command: [--auth]
     volumes:
-      # named volumes
       - .docker/data/mongodb:/data/db
-    restart: unless-stopped
+    ports:
+      - 27017:27017
 
   redis:
     image: redis:latest
@@ -42,9 +40,9 @@ services:
       - .docker/data/redis:/data
     restart: unless-stopped
 
-  rabbit:
-    image: rabbitmq:3-management-alpine
-    container_name: ec-rabbit
-    volumes:
-      - .docker/data/rabbit:/data
-    restart: unless-stopped
+  # rabbit:
+  #   image: rabbitmq:3-management-alpine
+  #   container_name: ec-rabbit
+  #   volumes:
+  #     - .docker/data/rabbit:/data
+  #   restart: unless-stopped
