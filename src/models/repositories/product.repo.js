@@ -32,6 +32,7 @@ const findAllPublishForShop = async({query, limit, skip}) => {
 
 // search full text
 const searchProductByUser = async({keySearch}) => {
+    
     const regexSearch = new RegExp(keySearch)
     return await product.find({
         isPublished: true,
@@ -51,6 +52,7 @@ const findAllProducts = async({limit, sort, page, filter, select}) => {
         .select(select)
         .lean();
 }
+
 
 const findById = async(product_id, unSelect) => {
     return await product.findById(product_id).select(unSelect)

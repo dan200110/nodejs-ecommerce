@@ -5,12 +5,13 @@ const {CREATED, OK} = require("../core/success.response");
 class AccessController {
 
     login = catchAsync(async (req, res) => {
-        OK(res, "Login success", await accessService.singIn(req.body))
+
+        OK(res, "Login success", await accessService.signIn(req.body))
     })
 
     refreshToken = catchAsync(async (req, res) => {
         OK(res, "Get token success", await accessService.refreshToken({
-            refreshToken: req.refreshToken,
+            refreshToken: req.body.refreshToken,
             user: req.user,
             keyStore: req.keyStore
         }))

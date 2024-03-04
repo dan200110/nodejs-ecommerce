@@ -4,6 +4,7 @@ const DOCUMENT_NAME = 'Key';
 const COLLECTION_NAME = 'Keys';
 
 const keyTokenSchema = new mongoose.Schema({
+    
     user: {
         type: Schema.Types.ObjectId,
         trim: true,

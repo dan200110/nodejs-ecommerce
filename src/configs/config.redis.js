@@ -7,6 +7,7 @@ class RedisConf {
     }
 
     connect() {
+        
         const client = redis.createClient({
             port: port,
             host: host

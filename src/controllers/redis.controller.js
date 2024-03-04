@@ -12,6 +12,7 @@ const {
 } = require('../utils/redis.util')
 
 class RedisController {
+
     redisTest = catchAsync(async (req, res) => {
 
         const sleep = (ms) => {

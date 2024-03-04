@@ -21,6 +21,7 @@ class ProductService {
     }
 
     static async updateProduct(type, productId, payload) {
+
         const productClass = ProductService.productRegistry[type]
         if (!productClass) throw new BusinessLogicError(i18n.translate('messages.error006', type))
 
@@ -45,6 +46,7 @@ class ProductService {
     }
 
     static async searchProducts({keySearch}) {
+
         return await searchProductByUser({keySearch})
     }
 
@@ -53,7 +55,7 @@ class ProductService {
     }
 
     static async findOneProduct(product_id) {
-        return await findById({product_id, unSelect: unGetSelectData(['__v', 'variations'])})
+        return await findById(product_id, unGetSelectData(['__v', 'variations']))
     }
 
     static async findProductById(product_id) {

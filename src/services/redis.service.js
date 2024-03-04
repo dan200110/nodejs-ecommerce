@@ -1,4 +1,5 @@
 const {setnx} = require("../utils/redis.util");
+
 const acquireLock = async (productId, quantity, cartId) => {
     const key = `lock_v2023_${productId}`
     const retryTimes = 10

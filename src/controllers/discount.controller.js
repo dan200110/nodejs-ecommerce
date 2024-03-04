@@ -4,6 +4,7 @@ const {DiscountService} = require("../services/discount.service");
 
 class DiscountController {
     createDiscountCode = catchAsync(async (req, res, next) => {
+
         OK(res,  "Create discount success",
             await DiscountService.createDiscountCode({
                 ...req.body,
@@ -46,12 +47,13 @@ class DiscountController {
     deleteDiscountCode = catchAsync(async (req, res) => {
         OK(res,  "Delete discount success",
             await DiscountService.deleteDiscountCode({
-                ...req.body,
-                shopId: req.user.userId
+                shopId: req.user.userId,
+                codeId: req.params.discountId
             }));
     })
 
     cancelDiscountCode = catchAsync(async (req, res) => {
+
         OK(res,  "Cancel discount success",
             await DiscountService.cancelDiscountCode({
                 ...req.body,

@@ -107,6 +107,7 @@ const authenticationV2 = catchAsync(async (req, res, next) => {
     // 3. get refreshToken
     if (refreshToken) {
         try {
+
             const decodeUser = verifyJwt(refreshToken, keyStore.privateKey);
             if (userId !== decodeUser.userId) throw new Api401Error('Invalid userId')
 

@@ -177,6 +177,7 @@ const options = {
                     },
                     example: {}
                 },
+                
                 Discount: {
                     type: 'object',
                     required: ['discount_code', 'discount_amount'],

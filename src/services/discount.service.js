@@ -24,7 +24,7 @@ class DiscountService {
         }
 
         // create index for discount code
-        const foundDiscount = discountModel.findOne({
+        const foundDiscount = await discountModel.findOne({
             discount_code: code,
             discount_shop_id: convert2ObjectId(shopId)
         }).lean()
@@ -60,18 +60,18 @@ class DiscountService {
             product_ids, applies_to, name, description, type,
             value, max_value, max_users
         } = payload
-
-
     }
 
-    static async getAllDiscountCodeWithProduct({
-        code, shopId, userId, limit, page
-                                               }) {
+    static async getAllDiscountCodeWithProduct({ code, shopId, limit, page }) {
         // create index for discount_code
+        console.log('service check get discount with product');
+
         const foundDiscount = await discountModel.findOne({
             discount_code: code,
             discount_shop_id: convert2ObjectId(shopId)
         })
+
+        console.log('found discount is', foundDiscount);
 
         if (!foundDiscount || !foundDiscount.discount_is_active) {
             throw new BusinessLogicError('Discount not exists')
@@ -104,9 +104,7 @@ class DiscountService {
         })
     }
 
-    static async getAllDiscountCodesByShop({
-        limit, page, shopId
-                                           }) {
+    static async getAllDiscountCodesByShop({ limit, page, shopId }) {
         return await findAllDiscountCodesUnSelect(
             {
                 limit: +limit,
@@ -182,10 +180,7 @@ class DiscountService {
     }
 
     // delete voucher
-    static async deleteDiscountCode({
-        shopId, codeId
-                                    }) {
-        // kiem tra xem co dk su dung o dau khong, neu k co thi xoa
+    static async deleteDiscountCode({ shopId, codeId }) {
         return discountModel.findOneAndDelete({
             discount_code: codeId,
             discount_shop_id: convert2ObjectId(shopId)
@@ -193,9 +188,7 @@ class DiscountService {
     }
 
     //
-    static async cancelDiscountCode({
-        codeId, shopId, userId
-                                    }) {
+    static async cancelDiscountCode({ codeId, shopId, userId }) {
         // check exists
         const  foundDiscount = await checkDiscountExists({
             model: discountModel,
