@@ -22,9 +22,8 @@ class DiscountController {
 
     getAllDiscountCodeWithProduct = catchAsync(async (req, res) => {
         OK(res,  "Get Discount Code success",
-            DiscountService.getAllDiscountCodeWithProduct({
-                ...req.body,
-                shopId: req.user.userId,
+            await DiscountService.getAllDiscountCodeWithProduct({
+                ...req.query
             }));
     })
 
@@ -39,8 +38,7 @@ class DiscountController {
     getDiscountAmount = catchAsync(async (req, res) => {
         OK(res,  "Get discount amount success",
             await DiscountService.getDiscountAmount({
-                ...req.body,
-                shopId: req.user.userId
+                ...req.body
             }));
     })
 

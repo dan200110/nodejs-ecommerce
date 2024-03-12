@@ -14,12 +14,10 @@ const unGetSelectData = (select = []) => {
 }
 
 const checkEnable = (value) => {
-    console.log('Check this value is: ', value);
     return value === 'true'
 }
 
-const convert2ObjectId = id => {
-    
+const convertToObjectIdMongodb = id => {
     return new Types.ObjectId(id)
 }
 
@@ -55,5 +53,5 @@ module.exports = {
     unGetSelectData,
     removeAttrUndefined,
     updateNestedObjectParser,
-    convert2ObjectId
+    convertToObjectIdMongodb
 }

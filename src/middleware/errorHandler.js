@@ -28,6 +28,7 @@ const returnError = (err, req, res, next) => {
     } else {
         error = {...err}
         // mapping error
+        error.stack = err.stack
         if (err.name === 'CastError') error = handleCastErrorDB(err);
         if (err.code === 11000) error = handleDuplicateFieldsDB(err)
         if (err.name === 'ValidationError') error = handleValidationErrorDB(err)
@@ -38,7 +39,8 @@ const returnError = (err, req, res, next) => {
     return res.status(statusCode).json({
         status: statusCode,
         message: error.message || 'Internal server error',
-        errors: error.errors
+        errors: error.errors,
+        stack: error.stack
     })
 }
 

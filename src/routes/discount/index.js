@@ -27,7 +27,7 @@ router.post('', discountController.createDiscountCode)
 
 router.get('', discountController.getAllDiscountCodesByShop)
 
-router.get('/search/:keySearch', discountController.cancelDiscountCode)
+// router.get('/search/:keySearch', discountController.cancelDiscountCode)
 
 router.delete('/:discountId', discountController.deleteDiscountCode)
 

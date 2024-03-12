@@ -1,5 +1,5 @@
 const Comment = require('../models/comment.model')
-const {convert2ObjectId} = require("../utils");
+const {convertToObjectIdMongodb} = require("../utils");
 const {Api404Error} = require("../core/error.response");
 const {ProductService} = require("./product.service");
 
@@ -32,7 +32,7 @@ class CommentService {
 
             // updateMany comments
             await Comment.updateMany({
-                comment_product_id: convert2ObjectId(productId),
+                comment_product_id: convertToObjectIdMongodb(productId),
                 comment_right: { $gte: rightValue}
             }, {
                 $inc: {comment_right: 2}
@@ -40,14 +40,14 @@ class CommentService {
 
             // updateMany comments
             await Comment.updateMany({
-                comment_product_id: convert2ObjectId(productId),
+                comment_product_id: convertToObjectIdMongodb(productId),
                 comment_left: { $gt: rightValue}
             }, {
                 $inc: {comment_left: 2}
             })
         } else {
             const maxRightValue = await Comment.findOne({
-               comment_product_id: convert2ObjectId(productId)
+               comment_product_id: convertToObjectIdMongodb(productId)
             }, 'comment_right', {sort: {comment_right: -1}})
             if (maxRightValue) {
                 rightValue = maxRightValue.comment_right + 1
@@ -76,7 +76,7 @@ class CommentService {
             if (!parent) throw new Api404Error('Not found comment for product')
 
             return Comment.find({
-                comment_product_id: convert2ObjectId(productId),
+                comment_product_id: convertToObjectIdMongodb(productId),
                 comment_left: {$gt: parent.comment_left},
                 comment_right: {$lte: parent.comment_right}
             }).select({
@@ -90,7 +90,7 @@ class CommentService {
         }
 
         return Comment.find({
-            comment_product_id: convert2ObjectId(productId),
+            comment_product_id: convertToObjectIdMongodb(productId),
             comment_parent_id: parentCommentId
         }).select({
             comment_left: 1,
@@ -127,20 +127,20 @@ class CommentService {
 
         // remove all comment id children
         await Comment.deleteMany({
-            comment_product_id: convert2ObjectId(productId),
+            comment_product_id: convertToObjectIdMongodb(productId),
             comment_left: {$gte: leftValue, $lte: rightValue}
         })
 
         // update value left and right
         await Comment.updateMany({
-            comment_product_id: convert2ObjectId(productId),
+            comment_product_id: convertToObjectIdMongodb(productId),
             comment_right: {$gt: rightValue}
         }, {
             $inc: {comment_right: -width}
         })
 
         await Comment.updateMany({
-            comment_product_id: convert2ObjectId(productId),
+            comment_product_id: convertToObjectIdMongodb(productId),
             comment_left: {$gt: leftValue}
         }, {
             $inc: {comment_left: -width}

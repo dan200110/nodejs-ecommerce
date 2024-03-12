@@ -4,7 +4,7 @@ const {model, Schema} = require("mongoose");
 const DOCUMENT_NAME = 'Inventory';
 const COLLECTION_NAME = 'Inventories';
 
-const apiKeySchema = new Schema({
+const inventorySchema = new Schema({
     inventory_product_id: {
         type: Schema.Types.ObjectId,
         ref: 'Product'
@@ -35,4 +35,4 @@ const apiKeySchema = new Schema({
     collection: COLLECTION_NAME
 });
 
-module.exports = model(DOCUMENT_NAME, apiKeySchema)
+module.exports = model(DOCUMENT_NAME, inventorySchema)

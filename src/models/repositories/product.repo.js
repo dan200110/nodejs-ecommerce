@@ -1,6 +1,6 @@
 const { product } = require("../product.model")
 const {Types} = require("mongoose")
-const {convert2ObjectId} = require("../../utils");
+const {convertToObjectIdMongodb} = require("../../utils");
 const {BusinessLogicError} = require("../../core/error.response");
 const ApiFeatures = require("./../../utils/api-feature.util")
 
@@ -32,7 +32,7 @@ const findAllPublishForShop = async({query, limit, skip}) => {
 
 // search full text
 const searchProductByUser = async({keySearch}) => {
-    
+
     const regexSearch = new RegExp(keySearch)
     return await product.find({
         isPublished: true,
@@ -80,20 +80,23 @@ const updateProductById = async ({
 }
 
 const getProductById = async (productId) => {
-    return await product.findOne({_id: convert2ObjectId(productId)}).lean()
+    return await product.findOne({_id: convertToObjectIdMongodb(productId)}).lean()
 }
 
 const checkProductByServer = async (products) => {
     return await Promise.all(
         products.map( async product => {
             const foundProduct = await getProductById(product.productId)
-            if (foundProduct) {
+
+            if (foundProduct && foundProduct.product_quality >= product.quantity) {
                 return {
                     price: foundProduct.product_price,
                     quantity: product.quantity,
                     productId: product.productId
                 }
             }
+
+            throw new BusinessLogicError(`Product with ID ${product.productId} error`);
         })
     )
 }

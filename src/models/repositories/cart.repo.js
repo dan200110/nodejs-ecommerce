@@ -1,10 +1,10 @@
 const cartModel = require('../cart.model')
-const {convert2ObjectId} = require("../../utils");
+const {convertToObjectIdMongodb} = require("../../utils");
 
 const findCartById = async (cartId) => {
-    
+
     return await cartModel.findOne({
-        _id: convert2ObjectId(cartId), cart_state: 'active'
+        _id: convertToObjectIdMongodb(cartId), cart_state: 'active'
     }).lean()
 }
 

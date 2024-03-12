@@ -23,8 +23,10 @@ class CartService {
             }
         }, options = {upsert: true, new: true}
 
+
         return await cartModel.findOneAndUpdate(query, updateOrInsert, options)
     }
+
 
     static async updateUserCartQuantity({userId, product}) {
         const {productId, quantity} = product
@@ -37,17 +39,20 @@ class CartService {
                 'cart_products.$.quantity': quantity
             }
         }, options = {upsert: true, new: true}
+
+        console.log("Query is", query);
+        console.log("updateSet is", updateSet);
+
         return await cartModel.findOneAndUpdate(query, updateSet, options)
     }
 
-    static async addToCart({
-        userId, product = {}
-                           }){
+    static async addToCart({ userId, product = {} }){
         const userCart = await cartModel.findOne({
             cart_user_id: userId
         })
 
         if (!userCart) {
+
             // create cart for User
             return await CartService.createUserCart({userId, product})
         }
@@ -66,6 +71,7 @@ class CartService {
     /**
      * shop_order_ids: [
      *  {
+     *      userId,
      *      shopId,
      *      item_products: [
      *          {
@@ -81,6 +87,8 @@ class CartService {
      * ]
      */
     static async addToCartV2({userId, shop_order_ids = []}) {
+
+        console.log("########### Call add to cart v2", userId);
         const {productId, quantity, old_quantity} = shop_order_ids[0]?.item_products[0]
 
         // check product
@@ -95,6 +103,7 @@ class CartService {
         if (quantity === 0) {
             // todo deleted
         }
+
 
         return await CartService.updateUserCartQuantity({
             userId,

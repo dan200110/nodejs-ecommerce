@@ -1,5 +1,5 @@
 const {BusinessLogicError} = require("../core/error.response");
-const {convert2ObjectId} = require("../utils");
+const {convertToObjectIdMongodb} = require("../utils");
 const {i18n}= require('../configs/config.i18n')
 const discountModel = require('../models/discount.model')
 const {findAllProducts} = require("../models/repositories/product.repo");
@@ -26,7 +26,7 @@ class DiscountService {
         // create index for discount code
         const foundDiscount = await discountModel.findOne({
             discount_code: code,
-            discount_shop_id: convert2ObjectId(shopId)
+            discount_shop_id: convertToObjectIdMongodb(shopId)
         }).lean()
 
         if (foundDiscount && foundDiscount.discount_is_active) {
@@ -64,14 +64,11 @@ class DiscountService {
 
     static async getAllDiscountCodeWithProduct({ code, shopId, limit, page }) {
         // create index for discount_code
-        console.log('service check get discount with product');
-
         const foundDiscount = await discountModel.findOne({
             discount_code: code,
-            discount_shop_id: convert2ObjectId(shopId)
+            discount_shop_id: convertToObjectIdMongodb(shopId)
         })
 
-        console.log('found discount is', foundDiscount);
 
         if (!foundDiscount || !foundDiscount.discount_is_active) {
             throw new BusinessLogicError('Discount not exists')
@@ -82,7 +79,7 @@ class DiscountService {
         if (discount_applies_to === 'all') {
             // get all
             filter = {
-                product_shop: convert2ObjectId(shopId),
+                product_shop: convertToObjectIdMongodb(shopId),
                 isPublished: true
             }
         }
@@ -110,7 +107,7 @@ class DiscountService {
                 limit: +limit,
                 page: +page,
                 filter: {
-                    discount_shopId: convert2ObjectId(shopId),
+                    discount_shopId: convertToObjectIdMongodb(shopId),
                     discount_is_active: true
                 },
                 unSelect: ['__v', 'discount_shop_id'],
@@ -119,12 +116,12 @@ class DiscountService {
         )
     }
 
-    static async getDiscountAmount({codeId, userId, shopId, products}) {
+    static async getDiscountAmount({codeId, shopId, products}) {
         const foundDiscount = await checkDiscountExists({
             model: discountModel,
             filter: {
-                discount_code: code,
-                discount_shop_id: convert2ObjectId(shopId)
+                discount_code: codeId,
+                discount_shop_id: convertToObjectIdMongodb(shopId)
             }
         })
 
@@ -162,13 +159,6 @@ class DiscountService {
             }
         }
 
-        if (discount_max_order_value > 0) {
-            const userDiscount = discount_users_used.find(user => user.userId === userId)
-            if (userDiscount) {
-                // ..
-            }
-        }
-
         // check xem discount nay la fixed amount
         const amount = discount_type  === 'fixed_amount' ? discount_value : (totalOrder * (discount_value / 100))
 
@@ -183,18 +173,18 @@ class DiscountService {
     static async deleteDiscountCode({ shopId, codeId }) {
         return discountModel.findOneAndDelete({
             discount_code: codeId,
-            discount_shop_id: convert2ObjectId(shopId)
+            discount_shop_id: convertToObjectIdMongodb(shopId)
         });
     }
 
     //
     static async cancelDiscountCode({ codeId, shopId, userId }) {
         // check exists
-        const  foundDiscount = await checkDiscountExists({
+        const foundDiscount = await checkDiscountExists({
             model: discountModel,
             filter: {
                 discount_code: codeId,
-                discount_shop_id: convert2ObjectId(shopId)
+                discount_shop_id: convertToObjectIdMongodb(shopId)
             }
         })
 

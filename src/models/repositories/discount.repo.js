@@ -1,4 +1,5 @@
 const {unGetSelectData, getSelectData} = require("../../utils");
+
 const findAllDiscountCodesUnSelect = async ({
     limit = 50, page = 1, sort = 'ctime',
     filter, unSelect, model}) => {
@@ -25,7 +26,8 @@ const findAllDiscountCodesSelect = async ({
         .lean();
 }
 
-const checkDiscountExists =  async (model, filter) => {
+const checkDiscountExists =  async ({model, filter}) => {
+    return model.findOne(filter).lean();
 }
 
 module.exports = {
