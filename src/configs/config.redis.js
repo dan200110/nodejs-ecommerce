@@ -7,7 +7,7 @@ class RedisConf {
     }
 
     connect() {
-        
+
         const client = redis.createClient({
             port: port,
             host: host
@@ -30,6 +30,7 @@ class RedisConf {
         return RedisConf.instance
     }
 }
+
 
 const instanceRedis = RedisConf.getInstance();
 module.exports = instanceRedis;

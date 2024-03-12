@@ -24,6 +24,7 @@ class ProductFactory {
 
         if (newProduct) {
             // add product_stock in inventory collections
+            
             const invenData = await insertInventory({
                 productId: product_id,
                 shopId: this.product_shop,

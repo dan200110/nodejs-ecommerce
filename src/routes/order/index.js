@@ -13,8 +13,7 @@ const {authenticationV2} = require("../../auth/authUtils");
  * 5. Update Order Status [Admin]
  */
 
-router.post('review', orderController.checkoutReview)
-
+router.post('/review', orderController.checkoutReview)
 router.post('', orderController.order)
 
 // router

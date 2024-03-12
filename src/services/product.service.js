@@ -15,6 +15,7 @@ class ProductService {
 
     static async createProduct(type, payload) {
         const productClass = ProductService.productRegistry[type]
+
         if (!productClass) throw new BusinessLogicError(i18n.translate('messages.error006', type))
 
         return new productClass(payload).createProduct()

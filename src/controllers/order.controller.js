@@ -4,8 +4,8 @@ const {OrderService} = require("../services/order.service");
 
 class OrderController {
     checkoutReview = catchAsync(async (req, res, next) => {
-        OK(res,  "Get cart info success",
-            await OrderService.checkoutReview(req.body));
+        OK(res,  "Checkout review success",
+            await OrderService.orderReview(req.body));
     })
 
     order = catchAsync(async (req, res, next) => {
