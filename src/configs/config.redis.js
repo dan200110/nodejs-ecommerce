@@ -1,36 +1,33 @@
 const redis = require('redis');
-const {redis: {host, port, username, password}} = require('./config')
+const { redis: { host, port, username, password } } = require('./config');
 
 class RedisConf {
     constructor() {
-        this.connect()
+        this.connect();
     }
 
     connect() {
-
-        const client = redis.createClient({
+        this.client = redis.createClient({
             port: port,
-            host: host
+            host: 'ec-redis'
         });
 
-        client.on('connect', () => {
-            console.log(`Connected: Redis connected host ${host} port ${port}!`)
+        this.client.on('connect', () => {
+            console.log(`Connected: Redis connected host ${host} port ${port}!`);
         });
 
-        client.on('error', () => {
-            console.log(`Error: Redis connected host ${host} port ${port}!`)
+        this.client.on('error', (error) => {
+            console.log(`Error: Redis connection error - ${error}`);
         });
     }
 
     static getInstance() {
         if (!RedisConf.instance) {
-            RedisConf.instance = new RedisConf()
+            RedisConf.instance = new RedisConf();
         }
 
-        return RedisConf.instance
+        return RedisConf.instance.client;
     }
 }
 
-
-const instanceRedis = RedisConf.getInstance();
-module.exports = instanceRedis;
+module.exports = RedisConf.getInstance();

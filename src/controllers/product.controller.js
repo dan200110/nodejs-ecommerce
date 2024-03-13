@@ -5,6 +5,7 @@ const {CREATED, OK} = require("../core/success.response");
 class ProductController {
 
     // create product
+    
     createProduct = catchAsync(async (req, res) => {
         CREATED(res, "Create new product success",
             await ProductService.createProduct(req.body.product_type, {

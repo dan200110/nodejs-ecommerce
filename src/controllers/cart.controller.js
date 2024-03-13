@@ -20,7 +20,9 @@ class CartController {
      * @url /api/v1/cart
      * @return {}
      */
+    
     addToCart = catchAsync( async(req, res) => {
+
         OK(res,  "Add to cart success", await CartService.addToCart(req.body))
     })
 
@@ -32,6 +34,7 @@ class CartController {
      * @url /api/v1/cart
      * @return {}
      */
+
     update = catchAsync( async(req, res) => {
         OK(res,  "Update to cart success", await CartService.addToCartV2(req.body))
     })

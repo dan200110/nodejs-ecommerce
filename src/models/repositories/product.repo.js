@@ -33,6 +33,7 @@ const findAllPublishForShop = async({query, limit, skip}) => {
 // search full text
 const searchProductByUser = async({keySearch}) => {
 
+
     const regexSearch = new RegExp(keySearch)
     return await product.find({
         isPublished: true,
@@ -52,6 +53,7 @@ const findAllProducts = async({limit, sort, page, filter, select}) => {
         .select(select)
         .lean();
 }
+
 
 
 const findById = async(product_id, unSelect) => {
@@ -81,6 +83,21 @@ const updateProductById = async ({
 
 const getProductById = async (productId) => {
     return await product.findOne({_id: convertToObjectIdMongodb(productId)}).lean()
+}
+
+const getProductsByIds = async (productIds) => {
+    const products = await product.find({ _id: { $in: productIds } });
+
+    // Map the products to an array of relevant details
+    const productDetails = products.map(product => ({
+      productId: product._id.toString(),
+      productName: product.product_name,
+      productPrice: product.product_price,
+      productThumb: product.product_thumb
+      // Add other relevant details as needed
+    }));
+
+    return productDetails;
 }
 
 const checkProductByServer = async (products) => {
@@ -163,7 +180,19 @@ const advancedSearchV2 = async (queryInput) => {
     return await features.query;
 }
 
+const reduceQuantityAfterOrderSuccess = async ({ productId, quantity} ) => {
+    const query = {
+        _id: convertToObjectIdMongodb(productId),
+        product_quality: {$gte: quantity},
+        isPublished: true
+    }, updateSet = {
+        $inc: {
+            product_quality: -quantity
+        }
+    }, options = { upsert: true, new: true }
 
+    return await product.updateOne(query, updateSet)
+}
 
 module.exports = {
     findAllDraftsForShop,
@@ -176,5 +205,7 @@ module.exports = {
     getProductById,
     checkProductByServer,
     advancedSearch,
-    advancedSearchV2
+    advancedSearchV2,
+    reduceQuantityAfterOrderSuccess,
+    getProductsByIds
 }

@@ -10,6 +10,7 @@ const cartSchema = new Schema({
         enum: ['active', 'completed', 'fail', 'pending', 'lock'],
         default: 'active'
     },
+
     cart_products: {
         type: Array,
         require: true,
@@ -24,10 +25,6 @@ const cartSchema = new Schema({
      *     price
      * }
      */
-    cart_count_product: {
-        type: Number,
-        default: 0
-    },
     cart_user_id: {
         type: Number,
         require: true

@@ -9,7 +9,7 @@ class OrderController {
     })
 
     order = catchAsync(async (req, res, next) => {
-        OK(res,  "Get cart info success",
+        OK(res,  "Create new order success",
             await OrderService.orderByUser(req.body));
     })
 }

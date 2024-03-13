@@ -26,7 +26,7 @@ const reservationInventory = async ({ productId, quantity, cartId} ) => {
             inventory_reservations: {
                 quantity,
                 cartId,
-                createdOn
+                createdOn: new Date()
             }
         }
     }, options = { upsert: true, new: true }

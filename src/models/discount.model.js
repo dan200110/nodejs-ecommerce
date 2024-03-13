@@ -36,23 +36,23 @@ const discountSchema = new Schema({
         type: Number,
         required: true,
     },
-    discount_uses_count: { // so discount da duoc su dung
+    discount_uses_count: { 
         type: Number,
         required: true,
     },
-    discount_users_used: { // so discount da duoc su dung
+    discount_users_used: {
         type: Array,
         default: [],
     },
-    discount_max_uses_per_user: { // so discount da duoc su dung
+    discount_max_uses_per_user: {
         type: Number,
         required: true,
     },
-    discount_min_order_value: { // so discount da duoc su dung
+    discount_min_order_value: {
         type: Number,
         required: true,
     },
-    discount_shop_id: { // so discount da duoc su dung
+    discount_shop_id: {
         type: Schema.Types.ObjectId,
         ref: 'Shop'
     },

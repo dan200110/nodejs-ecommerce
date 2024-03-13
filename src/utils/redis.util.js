@@ -1,6 +1,7 @@
 // lay ip user
 const client = require('../configs/config.redis');
 
+
 const get = async (key) => {
     return new Promise((resolve, reject) => {
         client.get(key, (err, data) => {
@@ -39,6 +40,17 @@ const setnx = async (key, value) => {
     })
 }
 
+const pexpire = async (key, expiredTIme) => {
+    return new Promise((resolve, reject) => {
+        client.pexpire(key, expiredTIme, (err, data) => {
+            if (err) {
+                return reject(err);
+            }
+
+            resolve(data);
+        });
+    })
+}
 // cache tu dong tang with redis
 const incr = key => {
     return new Promise((resolve, reject) => {

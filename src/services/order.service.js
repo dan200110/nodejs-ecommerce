@@ -3,7 +3,9 @@ const {Api404Error, BusinessLogicError} = require("../core/error.response");
 const {checkProductByServer} = require("../models/repositories/product.repo");
 const {DiscountService} = require("./discount.service");
 const { acquireLock, releaseLock } = require("./redis.service");
-const { orderModel } = require("../models/order.model")
+const {CartService} = require("../services/cart.service");
+const orderModel = require('../models/order.model')
+const { startSession } = require('mongoose');
 class OrderService  {
 
     /*
@@ -32,12 +34,6 @@ class OrderService  {
         }
      */
     static async orderReview({ cartId, userId, shop_order_ids}) {
-        // check cartId exists
-        // console.log('CartId is', cartId);
-        // console.log('userId is', userId);
-        // console.log('shop_order_ids is', shop_order_ids);
-
-
 
         const foundCart = findCartById(cartId)
         if (!foundCart) throw new Api404Error(`Cart don't exists`)
@@ -52,12 +48,6 @@ class OrderService  {
         // calculator bill
         for (let i = 0; i<shop_order_ids.length; i++) {
             const {shopId, shop_discounts = [], item_products = []} = shop_order_ids[i]
-            // console.log('shop_order_ids[i] is', shop_order_ids[i]);
-            // console.log('shopId is', shopId);
-            // console.log('shop_discounts is', shop_discounts);
-            // console.log('item_products is', item_products);
-
-
             // check product available
             const checkProductServer = await checkProductByServer(item_products)
             const hasInvalidProduct = checkProductServer.some(product => product === undefined);
@@ -91,7 +81,8 @@ class OrderService  {
                     shopId,
                     products: checkProductServer
                 })
-                checkout_order.totalDiscount +=discount
+                console.log('discount is', discount);
+                checkout_order.totalDiscount += discount
                 if (discount > 0) {
                     itemCheckout.priceApplyDiscount = checkoutPrice - discount
                 }
@@ -109,7 +100,10 @@ class OrderService  {
         }
     }
 
-    static async orderByUser({ shop_order_ids, cartId, userId,user_address = {}, user_payment = {}}) {
+    static async orderByUser({ shop_order_ids, cartId, userId, user_address = {}, user_payment = {}}) {
+        const session = await startSession();
+        session.startTransaction();
+
         const { checkout_order }
             = await OrderService.orderReview({
             cartId,
@@ -125,15 +119,16 @@ class OrderService  {
         for (let i = 0; i < products.length; i++) {
             const {productId, quantity} = products[i];
             const keyLock = await acquireLock(productId, quantity, cartId)
+            console.log(`product id ${productId} have keyLock is ${keyLock}`);
             acquireProduct.push( keyLock ? true : false )
             if(keyLock){
                 await releaseLock(keyLock)
             }
         }
-        
+
         // check if co mot sp het hang trong kho
         if(acquireProduct.includes(false)){
-            throw new BusinessLogicError('Co san pham da het hang')
+            throw new BusinessLogicError('Co san pham da duoc cap nhat')
         }
 
         // assume that can click to create order then status of this order is completed, no need to shipping,...
@@ -146,9 +141,17 @@ class OrderService  {
         })
 
         // neu insert thanh cong, thi remove product co trong cart
-        if(newOrder){
-            // remove product in my cart
+        if (newOrder) {
+            // Extract productIds from the products array
+            const productIds = products.map(({ productId }) => productId);
+
+            // Use Promise.all to concurrently delete items from the cart
+            await Promise.all(productIds.map(productId => CartService.deleteItemInCart({userId, productId})));
         }
+
+        await session.commitTransaction();
+        session.endSession();
+        return newOrder
     }
 
     static async getOrderByUser() {

@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const {db: {host, name, port, username, password}} = require('./config')
 
+
 const connectString = `mongodb://admin3:admin3@mongodb:27017/shopDEV?authSource=admin`;
 const {countConnect} = require('../helpers/check.connect');
 const MAX_POLL_SIZE = 50;

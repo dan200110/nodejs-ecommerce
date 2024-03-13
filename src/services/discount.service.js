@@ -15,7 +15,7 @@ class DiscountService {
         } = payload
 
         // validate
-        if (new Date() > new Date(start_date) || new Date() > new Date(end_date)) {
+        if (new Date() > new Date(end_date)) {
             throw new BusinessLogicError('Discount code has expired')
         }
 
@@ -107,7 +107,7 @@ class DiscountService {
                 limit: +limit,
                 page: +page,
                 filter: {
-                    discount_shopId: convertToObjectIdMongodb(shopId),
+                    discount_shop_id: convertToObjectIdMongodb(shopId),
                     discount_is_active: true
                 },
                 unSelect: ['__v', 'discount_shop_id'],
@@ -117,6 +117,7 @@ class DiscountService {
     }
 
     static async getDiscountAmount({codeId, shopId, products}) {
+        
         const foundDiscount = await checkDiscountExists({
             model: discountModel,
             filter: {

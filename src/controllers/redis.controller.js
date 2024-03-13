@@ -1,52 +1,40 @@
-const catchAsync = require('../helpers/catch.async')
-const {OK} = require("../core/success.response");
-const {
-    get,
-    set,
-    setnx,
-    incr,
-    decrby,
-    expire,
-    exists,
-    ttl
-} = require('../utils/redis.util')
+const redisClient = require('../configs/config.redis');
 
-class RedisController {
+// Wrap the usage of Redis client in an async function
+const useRedisClient = async () => {
+    // const redisClient = await redisClientPromise;
 
-    redisTest = catchAsync(async (req, res) => {
+    // Ensure the Redis client is not a Promise, as it should be the resolved client
+    if (typeof redisClient !== 'object' || redisClient === null) {
+        console.error('Error: Redis client not properly resolved.');
+        return;
+    }
 
-        const sleep = (ms) => {
-            return new Promise(resolve => setTimeout(resolve, ms));
+    // Use the Redis client directly
+    redisClient.set('key', 'value', (err, reply) => {
+        if (err) {
+            console.error(`Error setting key: ${err}`);
+        } else {
+            console.log(`Set key: ${reply}`);
         }
-        const test = async () => {
-            const key = 'redis-test'
-            await set(key, 'Ta Duy Hoang')
-            console.log(await get(key))
+    });
 
-            const key2 = 'count'
-            await setnx(key2, 1)
-
-            const key3 = 'product_incre'
-            incr(key3)
-            incr(key3)
-            incr(key3)
-            incr(key3)
-            incr(key3)
-            console.log(await get(key3))
-            decrby(key3, 1)
-            console.log(await get(key3))
-            console.log('ttl:::', await ttl(key3))
-            expire(key3, 100)
-            await sleep(1000);
-            console.log(await get(key3))
-
-            console.log(await exists('dsada'))
+    redisClient.get('key', (err, reply) => {
+        if (err) {
+            console.error(`Error getting key: ${err}`);
+        } else {
+            console.log(`Value for key: ${reply}`);
         }
+    });
 
-        await test()
+    // redisClient.del('key', (err, reply) => {
+    //     if (err) {
+    //         console.error(`Error deleting key: ${err}`);
+    //     } else {
+    //         console.log(`Deleted key: ${reply}`);
+    //     }
+    // });
+};
 
-        OK(res,  "OK", {});
-    })
-}
-
-module.exports = new RedisController()
+// Call the function
+useRedisClient();
